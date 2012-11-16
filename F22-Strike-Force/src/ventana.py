@@ -6,44 +6,35 @@ from elementos import *
 import juego
 from descRecursos import *
 
-
 class Common:
-
     def __init__(self):
-        self.pygame = 0
-        self.screen = 0
+        self.pygame=0
+        self.screen=0
 
     def ejecutar(self):
         pygame.init()
-
         clock = pygame.time.Clock()
         screen = pygame.display.set_mode((800,490))
-
         pygame.mouse.set_visible(True)        
         pygame.mixer.set_num_channels(32)
         pygame.display.set_caption("F22 Strike Force")
-
-        screenwidth = screen.get_width()
-        screenheight = screen.get_height()
-        explosions = 0
-
+        screenwidth=screen.get_width()
+        screenheight=screen.get_height()
+        explosions=0
         return pygame,screen
 
-
 class ProgressBar():
-
     def __init__(self):
         common = Common()  
         pygame,self.screen = common.ejecutar()
         
-        self.color = (102, 170, 255)
+        self.color=(102, 170, 255)
         self.y1 = self.screen.get_height()/2
         self.y2 = self.y1 +20
         self.max_width=800-40
         self.font = pygame.font.Font(CarpetaFuentes + "BITSUMIS.TTF",64)
         self.loading = self.font.render("Cargando", True, self.color)
-        self.textHeight = self.y1-80
-
+        self.textHeight=self.y1-80
     def update(self,percent):
         self.screen.fill((0,0,0))
         self.screen.blit(self.loading, (300,self.textHeight))
@@ -56,7 +47,7 @@ class ProgressBar():
 
 class Ventana:
     def __init__(self, width, height, fondo, musica):              
-        barra = ProgressBar()
+        barra=ProgressBar()
         barra.update(100)
         
         self.texto = Texto(40)
@@ -71,14 +62,14 @@ class Ventana:
         pygame.mixer.music.load(self.__musica)
         pygame.mixer.music.play()        
         self.imagen=Imagen()
-        self.background = self.imagen.cargarImagen(CarpetaImagenes + fondo)
+        self.background = self.imagen.cargarImagen(fondo)        
         self.correr()
 
     def correr(self):
         self.cursor = Cursor()
-        self.boton_iniciar = Boton(self.imagen.cargarImagen("boton_iniciar.png"), 600, 290)
-        self.boton_puntajes = Boton(self.imagen.cargarImagen("boton_puntajes.png"), 600, 350)
-        self.boton_salir = Boton(self.imagen.cargarImagen("boton_salir.png"), 600, 410)
+        self.boton_iniciar = Boton(self.imagen.cargarImagen("boton_iniciar.png"),600,290)
+        self.boton_puntajes = Boton(self.imagen.cargarImagen("boton_puntajes.png"),600,350)
+        self.boton_salir = Boton(self.imagen.cargarImagen("boton_salir.png"),600,410)
                 
         while True:
             self.cursor.actualizar()
@@ -96,21 +87,18 @@ class Ventana:
                         pygame.mixer.music.stop()
                         pygame.quit()
                         sys.exit()
-
             self.screen.blit(self.background, (0, 0))            
             self.screen.blit(self.boton_iniciar.imagen, self.boton_iniciar.rect)
             self.screen.blit(self.boton_puntajes.imagen, self.boton_puntajes.rect)
             self.screen.blit(self.boton_salir.imagen, self.boton_salir.rect)
             self.texto.render(self.screen,"F22 Strike Force", self.white ,(400, 0))
             pygame.display.update()
-
         return 0
 
-
 class VentJuego(Ventana):
-
     def correr(self):               
         self.raptor = Raptor(self.imagen)
+        self.enemigos = []
         self.enemigo1 = Enemigo(self.imagen)
         self.texto = Texto(25)
         self.balas = []
@@ -139,15 +127,16 @@ class VentJuego(Ventana):
             for i in range(len(self.balas)):
                 if (self.balas[i].actualizar(self.screen)) == True:
                     del(self.balas[i])
-                    break                  
+                    break
+                if self.balas[i].rect.colliderect(self.enemigo1):
+                    del(self.balas[i])
+                    break   
            
             self.screen.blit(self.raptor.imagen, self.raptor.rect)
             self.screen.blit(self.enemigo1.imagen, self.enemigo1.rect)
-
             self.texto.render(self.screen, "Puntaje: "+str(self.puntaje), self.white, (0, 0))
             self.texto.render(self.screen, "Vidas: "+str(self.vidas), self.white, (0, 26))
             pygame.display.update()
-
         return 0
 
 

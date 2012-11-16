@@ -3,4 +3,9 @@
 from ventana import *
 
 if __name__ == '__main__':    
-    ventana = Ventana(800, 490, 'fondo_menu.png', 'menu.mp3')
+    ventana = Ventana(800,490,'fondo_menu.png','menu.mp3')
+    
+
+
+
+

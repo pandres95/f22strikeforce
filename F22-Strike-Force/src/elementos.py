@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import sys, pygame
 from pygame.locals import *
 from ventana import *
