@@ -4,6 +4,7 @@ import pygame, sys, pygame.mixer
 from pygame.locals import *
 from elementos import *
 from principal import *
+import cPickle
 
 class Common:
     def __init__(self):
