@@ -31,7 +31,7 @@ class ProgressBar():
         self.y1 = self.screen.get_height()/2
         self.y2 = self.y1 +20
         self.max_width=800-40
-        self.font = pygame.font.Font("res/fonts/BITSUMIS.TTF",64)
+        self.font = pygame.font.Font("../res/fonts/BITSUMIS.TTF",64)
         self.loading = self.font.render("Cargando", True, self.color)
         self.textHeight=self.y1-80
     def update(self,percent):
@@ -50,7 +50,7 @@ class Ventana:
         self.white = (255,255,255)
         self.width = width
         self.height = height
-        self.__musica = 'res/sounds/'+musica
+        self.__musica = '../res/sounds/'+musica
         pygame.init()
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption('F22 Strike Force')
@@ -94,11 +94,11 @@ class Ventana:
 
 class VentNivel1(Ventana):
     def correr(self):           
-        self.sonDisparo = pygame.mixer.Sound("res/sounds/disparo.wav") 
+        self.sonDisparo = pygame.mixer.Sound("../res/sounds/disparo.wav") 
         self.sonDisparo.set_volume(0.2)
-        self.sonLaser = pygame.mixer.Sound("res/sounds/laser.wav") 
+        self.sonLaser = pygame.mixer.Sound("../res/sounds/laser.wav") 
         self.sonLaser.set_volume(0.2)
-        self.sonExplos1 = pygame.mixer.Sound("res/sounds/explosion1.wav") 
+        self.sonExplos1 = pygame.mixer.Sound("../res/sounds/explosion1.wav") 
         self.sonExplos1.set_volume(0.1)           
         self.raptor = Raptor(self.imagen)
         self.numEnemigos = 1
@@ -290,11 +290,11 @@ class VentNivel1(Ventana):
 
 class VentNivel2(Ventana):
     def correr(self):           
-        self.sonDisparo = pygame.mixer.Sound("res/sounds/disparo.wav") 
+        self.sonDisparo = pygame.mixer.Sound("../res/sounds/disparo.wav") 
         self.sonDisparo.set_volume(0.2)
-        self.sonLaser = pygame.mixer.Sound("res/sounds/laser.wav") 
+        self.sonLaser = pygame.mixer.Sound("../res/sounds/laser.wav") 
         self.sonLaser.set_volume(0.2)
-        self.sonExplos1 = pygame.mixer.Sound("res/sounds/explosion1.wav") 
+        self.sonExplos1 = pygame.mixer.Sound("../res/sounds/explosion1.wav") 
         self.sonExplos1.set_volume(0.1)           
         self.raptor = Raptor(self.imagen)
         self.numEnemigos = 1
@@ -490,11 +490,11 @@ class VentNivel2(Ventana):
 
 class VentNivel3(Ventana):
     def correr(self):           
-        self.sonDisparo = pygame.mixer.Sound("res/sounds/disparo.wav") 
+        self.sonDisparo = pygame.mixer.Sound("../res/sounds/disparo.wav") 
         self.sonDisparo.set_volume(0.2)
-        self.sonLaser = pygame.mixer.Sound("res/sounds/laser.wav") 
+        self.sonLaser = pygame.mixer.Sound("../res/sounds/laser.wav") 
         self.sonLaser.set_volume(0.2)
-        self.sonExplos1 = pygame.mixer.Sound("res/sounds/explosion1.wav") 
+        self.sonExplos1 = pygame.mixer.Sound("../res/sounds/explosion1.wav") 
         self.sonExplos1.set_volume(0.1)           
         self.raptor = Raptor(self.imagen)
         self.numEnemigos = 1
@@ -781,7 +781,7 @@ class Imagen:
         pass
     @classmethod
     def cargarImagen(cls, filename, transparent=False):
-        filename = 'res/images/' + filename
+        filename = '../res/images/' + filename
         try: image = pygame.image.load(filename)
         except pygame.error:
             raise SystemExit
@@ -807,7 +807,7 @@ class Cursor(pygame.Rect):
 class Texto(pygame.font.Font):
     def __init__(self, FontSize):
         pygame.font.init()
-        self.font = pygame.font.Font("res/fonts/BITSUMIS.TTF", FontSize)
+        self.font = pygame.font.Font("../res/fonts/BITSUMIS.TTF", FontSize)
         self.size = FontSize
 
     def render(self, surface, text, color, pos):
@@ -830,7 +830,3 @@ class Fichero():
         p3 = None
         return p1, p2, p3
         self.__fichero.close()
-    
-
-
-
