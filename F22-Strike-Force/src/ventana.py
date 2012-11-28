@@ -4,7 +4,7 @@ import pygame, sys, pygame.mixer
 from pygame.locals import *
 from elementos import *
 from principal import *
-import cPickle
+#import cPickle
 
 class Common:
     def __init__(self):
@@ -203,7 +203,7 @@ class VentNivel1(Ventana):
             if self.nBonusVida == True:                 
                 self.BonusVida.actualizar(time)
 
-            #Crea más enemigos cuando ya no queda ninguno
+            #Crea mÃ¡s enemigos cuando ya no queda ninguno
 
             if (len(self.enemigos)) == 0:
                 self.numEnemigos += 1                
@@ -218,7 +218,7 @@ class VentNivel1(Ventana):
                     if i != j:
                         self.enemigos[i].detColision(time, self.enemigos[j])
 
-            #Detectar colisión de bonus de vida con el raptor
+            #Detectar colisiÃ³n de bonus de vida con el raptor
 
             if self.nBonusVida == True:
                 if self.BonusVida.detColision(time, self.raptor) == True:
@@ -403,7 +403,7 @@ class VentNivel2(Ventana):
             if self.nBonusVida == True:                 
                 self.BonusVida.actualizar(time)
 
-            #Crea más enemigos cuando ya no queda ninguno
+            #Crea mÃ¡s enemigos cuando ya no queda ninguno
 
             if (len(self.enemigos)) == 0:
                 self.numEnemigos += 1                
@@ -420,7 +420,7 @@ class VentNivel2(Ventana):
                     if i != j:
                         self.enemigos[i].detColision(time, self.enemigos[j])
 
-            #Detectar colisión de bonus de vida con el raptor
+            #Detectar colisiÃ³n de bonus de vida con el raptor
 
             if self.nBonusVida == True:
                 if self.BonusVida.detColision(time, self.raptor) == True:
@@ -528,7 +528,7 @@ class VentNivel3(Ventana):
             self.contador1 += 1
             self.contador2 += 1
             
-            if self.contador1 == 101:
+            if self.contador1 == 71:
                 self.contador1 = 1
 
             if self.contador2 == 2101:
@@ -561,7 +561,7 @@ class VentNivel3(Ventana):
 
             #Crear balas de enemigos
 
-            if self.contador1 == 100:
+            if self.contador1 == 70:
                 for i in range(len(self.enemigos)):
                     x1,x2, y = self.enemigos[i].comprPos()                
                     bala1=BalaEnemigo(x1,y, self.imagen, 2)
@@ -603,7 +603,7 @@ class VentNivel3(Ventana):
             if self.nBonusVida == True:                 
                 self.BonusVida.actualizar(time)
 
-            #Crea más enemigos cuando ya no queda ninguno
+            #Crea mÃ¡s enemigos cuando ya no queda ninguno
 
             if (len(self.enemigos)) == 0:
                 self.numEnemigos += 1                
@@ -620,7 +620,7 @@ class VentNivel3(Ventana):
                     if i != j:
                         self.enemigos[i].detColision(time, self.enemigos[j])
 
-            #Detectar colisión de bonus de vida con el raptor
+            #Detectar colisiÃ³n de bonus de vida con el raptor
 
             if self.nBonusVida == True:
                 if self.BonusVida.detColision(time, self.raptor) == True:
