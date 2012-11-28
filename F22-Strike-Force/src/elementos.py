@@ -45,7 +45,7 @@ class Enemigo(pygame.sprite.Sprite):
         self.rect = self.imagen.get_rect()
         self.rect.centerx = random.randint(64, WIDTH-20)
         self.rect.centery = random.randint(64, HEIGHT/ 2)
-        self.speed = [0.3, -0.3]
+        self.speed = [0.2, -0.2]
         self.vida = 50        
 
     def actualizar(self, time):                  
@@ -78,13 +78,13 @@ class Bala(pygame.sprite.Sprite):
         self.rect = self.imagen.get_rect()
         self.rect.centerx = x
         self.rect.centery = y
-        self.speed = [20, -20]
+        self.speed = 20
                 
     def actualizar(self):        
         if (self.rect.centery+20)<0:
             return True        
         else:
-            self.rect.centery -= self.speed[0]            
+            self.rect.centery -= self.speed            
             return False
 
     def detColision(self, objeto):
@@ -94,19 +94,19 @@ class Bala(pygame.sprite.Sprite):
             return False
 
 class BalaEnemigo(Bala):
-    def __init__(self, x, y, im):
-        pygame.sprite.Sprite.__init__(self)
-        self.imagen = im.cargarImagen("disparo1.png", True)
+    def __init__(self, x, y, im, num):
+        pygame.sprite.Sprite.__init__(self)        
+        self.imagen = im.cargarImagen("disparo"+str(num)+".png", True)
         self.rect = self.imagen.get_rect()
         self.rect.centerx = x
         self.rect.centery = y
-        self.speed = [9, -9]
+        self.speed = 9
         
     def actualizar(self):        
         if (self.rect.centery+20)>HEIGHT:
             return True        
         else:
-            self.rect.centery += self.speed[0]            
+            self.rect.centery += self.speed           
             return False
 
 class Bonus(pygame.sprite.Sprite):       

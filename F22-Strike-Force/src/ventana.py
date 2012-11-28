@@ -4,7 +4,6 @@ import pygame, sys, pygame.mixer
 from pygame.locals import *
 from elementos import *
 from principal import *
-from descRecursos import *
 
 class Common:
     def __init__(self):
@@ -32,7 +31,7 @@ class ProgressBar():
         self.y1 = self.screen.get_height()/2
         self.y2 = self.y1 +20
         self.max_width=800-40
-        self.font = pygame.font.Font("BITSUMIS.TTF",64)
+        self.font = pygame.font.Font("res/fonts/BITSUMIS.TTF",64)
         self.loading = self.font.render("Cargando", True, self.color)
         self.textHeight=self.y1-80
     def update(self,percent):
@@ -51,7 +50,7 @@ class Ventana:
         self.white = (255,255,255)
         self.width = width
         self.height = height
-        self.__musica = CarpetaSonidos + musica
+        self.__musica = 'res/sounds/'+musica
         pygame.init()
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption('F22 Strike Force')
@@ -80,7 +79,7 @@ class Ventana:
                     if self.cursor.colliderect(self.boton_iniciar):                        
                         main(2)
                     if self.cursor.colliderect(self.boton_puntajes):
-                        main(3)
+                        main(5)
                     if self.cursor.colliderect(self.boton_salir):
                         pygame.mixer.music.stop()
                         pygame.quit()
@@ -93,13 +92,13 @@ class Ventana:
             pygame.display.update()
         return 0
 
-class VentJuego(Ventana):
+class VentNivel1(Ventana):
     def correr(self):           
-        self.sonDisparo = pygame.mixer.Sound(CarpetaSonidos + "disparo.wav") 
+        self.sonDisparo = pygame.mixer.Sound("res/sounds/disparo.wav") 
         self.sonDisparo.set_volume(0.2)
-        self.sonLaser = pygame.mixer.Sound(CarpetaSonidos + "laser.wav") 
+        self.sonLaser = pygame.mixer.Sound("res/sounds/laser.wav") 
         self.sonLaser.set_volume(0.2)
-        self.sonExplos1 = pygame.mixer.Sound(CarpetaSonidos + "explosion1.wav") 
+        self.sonExplos1 = pygame.mixer.Sound("res/sounds/explosion1.wav") 
         self.sonExplos1.set_volume(0.1)           
         self.raptor = Raptor(self.imagen)
         self.numEnemigos = 1
@@ -120,12 +119,12 @@ class VentJuego(Ventana):
             #Muestra ventana de nivel perdido
             
             if self.vidas <= 0:
-                continuar(False, self.puntaje, self.vidas) 
+                continuar(False, self.puntaje, self.vidas, 1) 
             
             #Muestra ventana de nivel superado
                 
-            if self.puntaje >= 600:
-                continuar(True, self.puntaje, self.vidas) 
+            if self.puntaje >= 50:
+                continuar(True, self.puntaje, self.vidas, 1) 
             
             self.contador1 += 1
             self.contador2 += 1
@@ -149,7 +148,7 @@ class VentJuego(Ventana):
             #Mostrar la venta Continuar
             
             if keys[K_ESCAPE]:      
-                continuar(False, self.puntaje, self.vidas)  
+                continuar(False, self.puntaje, self.vidas, 1)  
                 
             #Crear balas de raptor       
             
@@ -166,9 +165,9 @@ class VentJuego(Ventana):
             if self.contador1 == 100:
                 for i in range(len(self.enemigos)):
                     x1,x2, y = self.enemigos[i].comprPos()                
-                    bala1=BalaEnemigo(x1,y, self.imagen)
+                    bala1=BalaEnemigo(x1,y, self.imagen, 1)
                     self.balasEnem.append(bala1)
-                    bala2=BalaEnemigo(x2,y, self.imagen)
+                    bala2=BalaEnemigo(x2,y, self.imagen, 1)
                     self.balasEnem.append(bala2)  
                     self.sonLaser.play()               
                               
@@ -203,7 +202,7 @@ class VentJuego(Ventana):
             if self.nBonusVida == True:                 
                 self.BonusVida.actualizar(time)
 
-            #Crea mÃ¡s enemigos cuando ya no queda ninguno
+            #Crea más enemigos cuando ya no queda ninguno
 
             if (len(self.enemigos)) == 0:
                 self.numEnemigos += 1                
@@ -218,7 +217,7 @@ class VentJuego(Ventana):
                     if i != j:
                         self.enemigos[i].detColision(time, self.enemigos[j])
 
-            #Detectar colisiÃ³n de bonus de vida con el raptor
+            #Detectar colisión de bonus de vida con el raptor
 
             if self.nBonusVida == True:
                 if self.BonusVida.detColision(time, self.raptor) == True:
@@ -227,15 +226,12 @@ class VentJuego(Ventana):
                     self.BonusVida = 0
                     self.vidas += 1                
 
-            #Actualiza los enemigos
+            #Actualiza los enemigos y detecta colisiones entre enemigos y el raptor
             
             for i in range(len(self.enemigos)):
                 self.enemigos[i].actualizar(time)
-
-            #Detecta colisiones entre enemigos y el raptor
-
-            for i in range(len(self.enemigos)):
                 self.enemigos[i].detColision(time, self.raptor)
+                                    
             
             #Borra balas que se salen de la ventana
 
@@ -292,6 +288,407 @@ class VentJuego(Ventana):
         return 0
 
 
+class VentNivel2(Ventana):
+    def correr(self):           
+        self.sonDisparo = pygame.mixer.Sound("res/sounds/disparo.wav") 
+        self.sonDisparo.set_volume(0.2)
+        self.sonLaser = pygame.mixer.Sound("res/sounds/laser.wav") 
+        self.sonLaser.set_volume(0.2)
+        self.sonExplos1 = pygame.mixer.Sound("res/sounds/explosion1.wav") 
+        self.sonExplos1.set_volume(0.1)           
+        self.raptor = Raptor(self.imagen)
+        self.numEnemigos = 1
+        self.enemigos = []
+        enemigo = Enemigo(self.imagen, 2)
+        enemigo.speed = [0.3, -0.3]
+        enemigo.vida = 70
+        self.enemigos.append(enemigo)        
+        self.texto = Texto(25)
+        self.balas = []
+        self.balasEnem = []
+        self.clock = pygame.time.Clock()
+        self.vidas = 3
+        self.puntaje = 0
+        self.contador1 = 0
+        self.contador2 = 0
+        self.nBonusVida = False        
+        while True:            
+            
+            #Muestra ventana de nivel perdido
+            
+            if self.vidas <= 0:
+                continuar(False, self.puntaje, self.vidas, 2) 
+            
+            #Muestra ventana de nivel superado
+                
+            if self.puntaje >= 50:
+                continuar(True, self.puntaje, self.vidas, 2) 
+            
+            self.contador1 += 1
+            self.contador2 += 1
+            
+            if self.contador1 == 101:
+                self.contador1 = 1
+
+            if self.contador2 == 2101:
+                self.contador2 = 1
+                self.nBonusVida = False
+                self.BonusVida = 0
+                
+            time = self.clock.tick(45)
+            keys = pygame.key.get_pressed()
+            for eventos in pygame.event.get():
+                if eventos.type == QUIT:
+                    pygame.mixer.music.stop()
+                    pygame.quit()
+                    sys.exit()
+
+            #Mostrar la venta Continuar
+            
+            if keys[K_ESCAPE]:      
+                continuar(False, self.puntaje, self.vidas, 2)  
+                
+            #Crear balas de raptor       
+            
+            if keys[K_SPACE]:               
+                x1,x2, y = self.raptor.comprPos()                
+                bala1=Bala(x1,y, self.imagen)
+                self.balas.append(bala1)
+                bala2=Bala(x2,y, self.imagen)
+                self.balas.append(bala2)                
+                self.sonDisparo.play()
+
+            #Crear balas de enemigos
+
+            if self.contador1 == 100:
+                for i in range(len(self.enemigos)):
+                    x1,x2, y = self.enemigos[i].comprPos()                
+                    bala1=BalaEnemigo(x1,y, self.imagen, 1)
+                    bala1.speed = 11
+                    self.balasEnem.append(bala1)
+                    bala2=BalaEnemigo(x2,y, self.imagen, 1)
+                    bala2.speed = 11
+                    self.balasEnem.append(bala2)  
+                    self.sonLaser.play()               
+                              
+
+            #Crear bonus de vida
+
+            if self.contador2 == 2000:
+                self.nBonusVida = True
+                self.BonusVida = Bonus(self.imagen, "lifebonus.png")
+
+            #Borra balas de enemigos que se salen de la ventana
+
+            for i in range(len(self.balasEnem)):                
+                if (self.balasEnem[i].actualizar()) == True:
+                    del(self.balasEnem[i])
+                    break
+
+            #Detecta colisiones entre balas y raptor
+
+            for j in range(len(self.balasEnem)):
+                if (self.balasEnem[j].detColision(self.raptor)) == True:                    
+                    self.vidas -= 0.4
+                    self.sonExplos1.play()
+                    del(self.balasEnem[j])
+                    break
+                
+
+            self.raptor.mover(time, keys, self.screen)
+
+            #Crea el bonus de vida
+            
+            if self.nBonusVida == True:                 
+                self.BonusVida.actualizar(time)
+
+            #Crea más enemigos cuando ya no queda ninguno
+
+            if (len(self.enemigos)) == 0:
+                self.numEnemigos += 1                
+                for i in range(self.numEnemigos):
+                    enemigo = Enemigo(self.imagen, 2)
+                    enemigo.speed = [0.3, -0.3]
+                    enemigo.vida = 70
+                    self.enemigos.append(enemigo)
+
+            #Actualiza colisiones entre enemigos
+
+            for i in range(len(self.enemigos)):
+                for j in range(len(self.enemigos)):
+                    if i != j:
+                        self.enemigos[i].detColision(time, self.enemigos[j])
+
+            #Detectar colisión de bonus de vida con el raptor
+
+            if self.nBonusVida == True:
+                if self.BonusVida.detColision(time, self.raptor) == True:
+                    self.contador2 = 1
+                    self.nBonusVida = False
+                    self.BonusVida = 0
+                    self.vidas += 1                
+
+            #Actualiza los enemigos y detecta colisiones entre enemigos y el raptor
+            
+            for i in range(len(self.enemigos)):
+                self.enemigos[i].actualizar(time)       
+                self.enemigos[i].detColision(time, self.raptor)
+            
+            #Borra balas que se salen de la ventana
+
+            for i in range(len(self.balas)):                
+                if (self.balas[i].actualizar()) == True:
+                    del(self.balas[i])
+                    break
+
+            #Detecta colisiones entre balas y enemigos
+
+            for i in range(len(self.enemigos)):  
+                for j in range(len(self.balas)):
+                    if (self.balas[j].detColision(self.enemigos[i])) == True:
+                        self.enemigos[i].vida -= 1
+                        self.puntaje += 0.5
+                        self.sonExplos1.play()                        
+                        del(self.balas[j])
+                        break
+
+            #Borra enemigos que pierden todas sus vidas
+
+            for j in range(len(self.enemigos)):
+                if self.enemigos[j].vida <= 0:
+                    del(self.enemigos[j])
+                    break
+
+            #Muestra todos los objetos en pantalla
+                    
+            self.screen.blit(self.background, (0, 0))
+
+            if self.nBonusVida == True:                
+                self.screen.blit(self.BonusVida.imagen, self.BonusVida.rect)
+
+            for i in range(len(self.balas)):   
+                self.screen.blit(self.balas[i].imagen, self.balas[i].rect)
+
+            for i in range(len(self.balasEnem)):   
+                self.screen.blit(self.balasEnem[i].imagen, self.balasEnem[i].rect)
+            
+            for i in range(len(self.enemigos)):
+                self.screen.blit(self.enemigos[i].imagen, self.enemigos[i].rect)            
+
+            self.screen.blit(self.raptor.imagen, self.raptor.rect)            
+            self.texto.render(self.screen, "Puntaje: "+str(int(self.puntaje)), self.white, (0, 0))
+            
+            impresion = 0
+            if self.vidas > int(self.vidas):
+                impresion = int(self.vidas) + 1
+            elif self.vidas == int(self.vidas):
+                impresion = int(self.vidas)
+            self.texto.render(self.screen, "Vidas: "+str(impresion), self.white, (0, 26))
+            
+            pygame.display.update()
+        return 0
+
+class VentNivel3(Ventana):
+    def correr(self):           
+        self.sonDisparo = pygame.mixer.Sound("res/sounds/disparo.wav") 
+        self.sonDisparo.set_volume(0.2)
+        self.sonLaser = pygame.mixer.Sound("res/sounds/laser.wav") 
+        self.sonLaser.set_volume(0.2)
+        self.sonExplos1 = pygame.mixer.Sound("res/sounds/explosion1.wav") 
+        self.sonExplos1.set_volume(0.1)           
+        self.raptor = Raptor(self.imagen)
+        self.numEnemigos = 1
+        self.enemigos = []
+        enemigo = Enemigo(self.imagen, 3)
+        enemigo.speed = [0.4, -0.4]
+        enemigo.vida = 90
+        self.enemigos.append(enemigo)        
+        self.texto = Texto(25)
+        self.balas = []
+        self.balasEnem = []
+        self.clock = pygame.time.Clock()
+        self.vidas = 3
+        self.puntaje = 0
+        self.contador1 = 0
+        self.contador2 = 0
+        self.nBonusVida = False        
+        while True:            
+            
+            #Muestra ventana de nivel perdido
+            
+            if self.vidas <= 0:
+                continuar(False, self.puntaje, self.vidas, 3) 
+            
+            #Muestra ventana de nivel superado
+                
+            if self.puntaje >= 500:
+                continuar(True, self.puntaje, self.vidas, 3) 
+            
+            self.contador1 += 1
+            self.contador2 += 1
+            
+            if self.contador1 == 101:
+                self.contador1 = 1
+
+            if self.contador2 == 2101:
+                self.contador2 = 1
+                self.nBonusVida = False
+                self.BonusVida = 0
+                
+            time = self.clock.tick(45)
+            keys = pygame.key.get_pressed()
+            for eventos in pygame.event.get():
+                if eventos.type == QUIT:
+                    pygame.mixer.music.stop()
+                    pygame.quit()
+                    sys.exit()
+
+            #Mostrar la venta Continuar
+            
+            if keys[K_ESCAPE]:      
+                continuar(False, self.puntaje, self.vidas, 3)  
+                
+            #Crear balas de raptor       
+            
+            if keys[K_SPACE]:               
+                x1,x2, y = self.raptor.comprPos()                
+                bala1=Bala(x1,y, self.imagen)
+                self.balas.append(bala1)
+                bala2=Bala(x2,y, self.imagen)
+                self.balas.append(bala2)                
+                self.sonDisparo.play()
+
+            #Crear balas de enemigos
+
+            if self.contador1 == 100:
+                for i in range(len(self.enemigos)):
+                    x1,x2, y = self.enemigos[i].comprPos()                
+                    bala1=BalaEnemigo(x1,y, self.imagen, 2)
+                    bala1.speed = 15
+                    self.balasEnem.append(bala1)
+                    bala2=BalaEnemigo(x2,y, self.imagen, 2)
+                    bala2.speed = 15
+                    self.balasEnem.append(bala2)  
+                    self.sonLaser.play()               
+                              
+
+            #Crear bonus de vida
+
+            if self.contador2 == 2000:
+                self.nBonusVida = True
+                self.BonusVida = Bonus(self.imagen, "lifebonus.png")
+
+            #Borra balas de enemigos que se salen de la ventana
+
+            for i in range(len(self.balasEnem)):                
+                if (self.balasEnem[i].actualizar()) == True:
+                    del(self.balasEnem[i])
+                    break
+
+            #Detecta colisiones entre balas y raptor
+
+            for j in range(len(self.balasEnem)):
+                if (self.balasEnem[j].detColision(self.raptor)) == True:                    
+                    self.vidas -= 0.6
+                    self.sonExplos1.play()
+                    del(self.balasEnem[j])
+                    break
+                
+
+            self.raptor.mover(time, keys, self.screen)
+
+            #Crea el bonus de vida
+            
+            if self.nBonusVida == True:                 
+                self.BonusVida.actualizar(time)
+
+            #Crea más enemigos cuando ya no queda ninguno
+
+            if (len(self.enemigos)) == 0:
+                self.numEnemigos += 1                
+                for i in range(self.numEnemigos):
+                    enemigo = Enemigo(self.imagen, 3)
+                    enemigo.speed = [0.4, -0.4]
+                    enemigo.vida = 90
+                    self.enemigos.append(enemigo)
+
+            #Actualiza colisiones entre enemigos
+
+            for i in range(len(self.enemigos)):
+                for j in range(len(self.enemigos)):
+                    if i != j:
+                        self.enemigos[i].detColision(time, self.enemigos[j])
+
+            #Detectar colisión de bonus de vida con el raptor
+
+            if self.nBonusVida == True:
+                if self.BonusVida.detColision(time, self.raptor) == True:
+                    self.contador2 = 1
+                    self.nBonusVida = False
+                    self.BonusVida = 0
+                    self.vidas += 1                
+
+            #Actualiza los enemigos y detecta colisiones entre enemigos y el raptor
+            
+            for i in range(len(self.enemigos)):
+                self.enemigos[i].actualizar(time)       
+                self.enemigos[i].detColision(time, self.raptor)
+            
+            #Borra balas que se salen de la ventana
+
+            for i in range(len(self.balas)):                
+                if (self.balas[i].actualizar()) == True:
+                    del(self.balas[i])
+                    break
+
+            #Detecta colisiones entre balas y enemigos
+
+            for i in range(len(self.enemigos)):  
+                for j in range(len(self.balas)):
+                    if (self.balas[j].detColision(self.enemigos[i])) == True:
+                        self.enemigos[i].vida -= 1
+                        self.puntaje += 0.5
+                        self.sonExplos1.play()                        
+                        del(self.balas[j])
+                        break
+
+            #Borra enemigos que pierden todas sus vidas
+
+            for j in range(len(self.enemigos)):
+                if self.enemigos[j].vida <= 0:
+                    del(self.enemigos[j])
+                    break
+
+            #Muestra todos los objetos en pantalla
+                    
+            self.screen.blit(self.background, (0, 0))
+
+            if self.nBonusVida == True:                
+                self.screen.blit(self.BonusVida.imagen, self.BonusVida.rect)
+
+            for i in range(len(self.balas)):   
+                self.screen.blit(self.balas[i].imagen, self.balas[i].rect)
+
+            for i in range(len(self.balasEnem)):   
+                self.screen.blit(self.balasEnem[i].imagen, self.balasEnem[i].rect)
+            
+            for i in range(len(self.enemigos)):
+                self.screen.blit(self.enemigos[i].imagen, self.enemigos[i].rect)            
+
+            self.screen.blit(self.raptor.imagen, self.raptor.rect)            
+            self.texto.render(self.screen, "Puntaje: "+str(int(self.puntaje)), self.white, (0, 0))
+            
+            impresion = 0
+            if self.vidas > int(self.vidas):
+                impresion = int(self.vidas) + 1
+            elif self.vidas == int(self.vidas):
+                impresion = int(self.vidas)
+            self.texto.render(self.screen, "Vidas: "+str(impresion), self.white, (0, 26))
+            
+            pygame.display.update()
+        return 0
+    
+
 class VentPuntajes(Ventana):
     def correr(self):
         self.texto = Texto(35)    
@@ -323,7 +720,7 @@ class VentPuntajes(Ventana):
         return 0
     
 class VentContinuar(Ventana):
-    def correr(self, resp, punt, vidas):
+    def correr(self, resp, punt, vidas, nivel):
         self.texto = Texto(35)   
         self.texto2 = Texto(25)      
         self.cursor = Cursor()   
@@ -352,8 +749,9 @@ class VentContinuar(Ventana):
                         pygame.mixer.music.stop()
                         pygame.quit()
                         sys.exit()
-                    if self.cursor.colliderect(self.boton_siguiente):
-                        pass
+                    if resp == True:
+                        if self.cursor.colliderect(self.boton_siguiente):                            
+                            main(nivel+2)
                     
             self.screen.blit(self.background, (0, 0))        
             self.screen.blit(self.boton_salir.imagen, self.boton_salir.rect)    
@@ -383,7 +781,7 @@ class Imagen:
         pass
     @classmethod
     def cargarImagen(cls, filename, transparent=False):
-        filename = CarpetaImagenes + filename
+        filename = 'res/images/' + filename
         try: image = pygame.image.load(filename)
         except pygame.error:
             raise SystemExit
@@ -409,7 +807,7 @@ class Cursor(pygame.Rect):
 class Texto(pygame.font.Font):
     def __init__(self, FontSize):
         pygame.font.init()
-        self.font = pygame.font.Font("BITSUMIS.TTF", FontSize)
+        self.font = pygame.font.Font("res/fonts/BITSUMIS.TTF", FontSize)
         self.size = FontSize
 
     def render(self, surface, text, color, pos):
@@ -433,5 +831,6 @@ class Fichero():
         return p1, p2, p3
         self.__fichero.close()
     
+
 
 
