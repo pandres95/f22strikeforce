@@ -80,18 +80,19 @@ class Bala(pygame.sprite.Sprite):
         self.rect.centery = y
         self.speed = 20
                 
-    def actualizar(self):        
+    def actualizar(self, objeto):        
         if (self.rect.centery+20)<0:
-            return True        
+            x = True        
         else:
             self.rect.centery -= self.speed            
-            return False
-
-    def detColision(self, objeto):
+            x = False
+    
         if pygame.sprite.collide_rect(self, objeto):
-            return True
-        else:
-            return False
+            y = True
+        else:            
+            y = False
+        
+        return x, y
 
 class BalaEnemigo(Bala):
     def __init__(self, x, y, im, num):
@@ -102,12 +103,19 @@ class BalaEnemigo(Bala):
         self.rect.centery = y
         self.speed = 9
         
-    def actualizar(self):        
+    def actualizar(self, objeto):                
         if (self.rect.centery+20)>HEIGHT:
-            return True        
+            x = True        
         else:
-            self.rect.centery += self.speed           
-            return False
+            self.rect.centery += self.speed                   
+            x = False      
+        
+        if pygame.sprite.collide_rect(self, objeto):
+            y = True
+        else:            
+            y = False           
+        
+        return x, y
 
 class Bonus(pygame.sprite.Sprite):       
     def __init__(self, im, imagen):
