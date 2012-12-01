@@ -1,10 +1,7 @@
 #!/usr/bin/env python 
 # -*- coding: utf-8 -*- 
 
-import os
-import random
-import pygame, sys, pygame.mixer
-from pygame.locals import *
+from pygame import *
 from elementos import *
 from principal import *
 #import cPickle
@@ -119,7 +116,8 @@ class VentNivel(Ventana):
         self.puntaje = 0
         self.contador1 = 0
         self.contador2 = 0
-        self.nBonusVida = False        
+        self.nBonusVida = False
+                
         while True:         
                        
             #Muestra ventana de nivel perdido
@@ -292,6 +290,20 @@ class VentPuntajes(Ventana):
         self.cursor = Cursor()        
         self.boton_regresar = Boton(self.imagen.cargarImagen("boton_regresar.png"),330,420)
         self.boton_salir = Boton(self.imagen.cargarImagen("boton_salir.png"),130,420)
+        
+        self.fichero = Fichero()
+        self.puntFichero = []
+        self.num = []
+        linea = ""
+        for i in range(3):
+            linea = self.fichero.mostrarPunt(i)
+            self.puntFichero.append(str(linea))              
+            
+        for i in range(3):         
+            if self.puntFichero[i] != "": 
+                self.num.append(str(i+1)+".")
+            else:
+                self.num.append("")
                 
         while True:
             self.cursor.actualizar()
@@ -310,13 +322,12 @@ class VentPuntajes(Ventana):
             self.screen.blit(self.background, (0, 0))            
             self.screen.blit(self.boton_regresar.imagen, self.boton_regresar.rect)
             self.screen.blit(self.boton_salir.imagen, self.boton_salir.rect)
-            self.texto.render(self.screen,"Puntajes", self.white ,(200, 30))
-            self.fichero = Fichero()
-            self.puntFichero = []
-            self.fichero = self.fichero.agregarPunt(100)
-            #self.texto2.render(self.screen,"Mas altos:   1. "+str(int(self.puntFichero[0])), self.white ,(20, 200))   
-            #self.texto2.render(self.screen,"         :   2. "+str(int(self.puntFichero[1])), self.white ,(20, 300))
-            #self.texto2.render(self.screen,"         :   3. "+str(int(self.puntFichero[2])), self.white ,(20, 400))             
+            self.texto.render(self.screen,"Puntajes", self.white ,(200, 30))                       
+           
+            self.texto2.render(self.screen,"Mas altos:   "+self.num[0]+"   "+self.puntFichero[0], self.white ,(20, 200))   
+            self.texto2.render(self.screen,"              "+self.num[1]+"   "+self.puntFichero[1], self.white ,(20, 250))
+            self.texto2.render(self.screen,"              "+self.num[2]+"   "+self.puntFichero[2], self.white ,(20, 300))  
+                       
             pygame.display.update()
         return 0
     
@@ -335,6 +346,10 @@ class VentContinuar(Ventana):
         self.boton_menu = Boton(self.imagen.cargarImagen("boton_menu.png"),x2,300)
         if resp == True:
             self.boton_siguiente = Boton(self.imagen.cargarImagen("boton_siguiente.png"),410,300)
+            
+        self.fichero = Fichero()
+        if punt != 0:
+            self.fichero.agregarPunt(int(punt)) 
                 
         while True:
             self.cursor.actualizar()
@@ -418,40 +433,49 @@ class Texto(pygame.font.Font):
             y += self.size
 
 class Fichero():
-    def __init__(self):               
+    def __init__(self): 
+        self.__nombre = "puntajes.txt"          
+        self.punt = []                  
+        
+    def abrir(self, tipo):
         try:
-            self.__archivo = open("puntajes.txt", "r") 
+            self.__archivo = open(self.__nombre, tipo) 
         except:
-            print("Error")        
-        
-        self.p = []  
-        
-        self.lineas = 0
-        for linea in self.__archivo:              
-            self.lineas += 1
-        
-        for i in range(0, self.lineas):
-            self.p[i] = self.__archivo.read(i)  
+            print("Error")     
             
+    def cerrar(self):
         try:
             self.__archivo.close()
-        except:
-            print("Error")                    
-        
-    def agregarPunt(self, puntaje):   
-        try:
-            self.__archivo = open("puntajes.txt", "w") 
         except:
             print("Error")   
-            
-        puntajes = [str(10)+"\n",str(12)+"\n",str(50)+"\n"] 
-        self.__archivo.writelines(puntajes)        
-            
-        try:
-            self.__archivo.close()
-        except:
-            print("Error")       
+        
+    def cargarPunt(self):
+        self.abrir("r")             
+        linea = "" 
+        for i in range(3):
+            linea = self.__archivo.readline()
+            if linea == "" or linea == "\n":
+                linea = 0 
+                
+            self.punt.append(int(linea))
+                       
+        self.cerrar()                          
+        
+    def agregarPunt(self, puntaje):        
+        self.cargarPunt()      
+        self.abrir("a") 
+        self.cerrar() 
+        self.abrir("w+")        
+        self.punt.append(puntaje)
+        self.punt.sort()
+        for i in range(3, len(self.punt)):
+            del(self.punt[i])
+        puntajes = [str(self.punt[0])+"\n",str(self.punt[1])+"\n",str(self.punt[2])+"\n"] 
+        self.__archivo.writelines(puntajes) 
+        self.cerrar()                       
 
     def mostrarPunt(self, i):
-        pass#return self.p[0]         
+        self.cargarPunt()   
+        return self.punt[i]       
+       
         
