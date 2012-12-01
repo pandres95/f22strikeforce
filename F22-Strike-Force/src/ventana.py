@@ -311,7 +311,12 @@ class VentPuntajes(Ventana):
             self.screen.blit(self.boton_regresar.imagen, self.boton_regresar.rect)
             self.screen.blit(self.boton_salir.imagen, self.boton_salir.rect)
             self.texto.render(self.screen,"Puntajes", self.white ,(200, 30))
-            self.texto2.render(self.screen,"Mas altos: ", self.white ,(20, 200))
+            self.fichero = Fichero()
+            self.puntFichero = []
+            self.fichero = self.fichero.agregarPunt(100)
+            #self.texto2.render(self.screen,"Mas altos:   1. "+str(int(self.puntFichero[0])), self.white ,(20, 200))   
+            #self.texto2.render(self.screen,"         :   2. "+str(int(self.puntFichero[1])), self.white ,(20, 300))
+            #self.texto2.render(self.screen,"         :   3. "+str(int(self.puntFichero[2])), self.white ,(20, 400))             
             pygame.display.update()
         return 0
     
@@ -413,16 +418,40 @@ class Texto(pygame.font.Font):
             y += self.size
 
 class Fichero():
-    def __init__(self):
-        self.__nombre = "puntajes.txt"
-        self.__fichero = open(self.nombre, "a+")
+    def __init__(self):               
+        try:
+            self.__archivo = open("puntajes.txt", "r") 
+        except:
+            print("Error")        
         
-    def agregarPunt(self, puntaje):
-        self.__fichero.close()
+        self.p = []  
+        
+        self.lineas = 0
+        for linea in self.__archivo:              
+            self.lineas += 1
+        
+        for i in range(0, self.lineas):
+            self.p[i] = self.__archivo.read(i)  
+            
+        try:
+            self.__archivo.close()
+        except:
+            print("Error")                    
+        
+    def agregarPunt(self, puntaje):   
+        try:
+            self.__archivo = open("puntajes.txt", "w") 
+        except:
+            print("Error")   
+            
+        puntajes = [str(10)+"\n",str(12)+"\n",str(50)+"\n"] 
+        self.__archivo.writelines(puntajes)        
+            
+        try:
+            self.__archivo.close()
+        except:
+            print("Error")       
 
-    def mostrarPunt(self):
-        p1 = None
-        p2 = None
-        p3 = None
-        return p1, p2, p3
-        self.__fichero.close()
+    def mostrarPunt(self, i):
+        pass#return self.p[0]         
+        
