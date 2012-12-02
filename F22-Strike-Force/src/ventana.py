@@ -131,7 +131,7 @@ class VentNivel(Ventana):
             
             #Muestra ventana de nivel superado                          
             
-            if self.segundos >= tiempo:
+            if self.segundos >= tiempo:                
                 continuar(True, self.puntaje, self.vidas, nivel)
             
             self.contador1 += 1
@@ -282,9 +282,10 @@ class VentNivel(Ventana):
                 impresion = int(self.vidas) + 1
             elif self.vidas == int(self.vidas):
                 impresion = int(self.vidas)
-            self.texto.render(self.screen, "Vidas: "+str(impresion), self.white, (0, 26))
+            self.texto.render(self.screen, "Vidas: "+str(impresion), self.white, (0, 26))            
             
-            self.segundos = pygame.time.get_ticks()/1000            
+            self.segundos = pygame.time.get_ticks()/1000   
+            print (self.segundos)         
             
             pygame.display.update()
         return 0
@@ -376,7 +377,7 @@ class VentContinuar(Ventana):
                         pygame.quit()
                         sys.exit()
                     if resp == True:
-                        if self.cursor.colliderect(self.boton_siguiente):                                               
+                        if self.cursor.colliderect(self.boton_siguiente):                                                                  
                             main(int(nivel+2), int(punt))
                     
             self.screen.blit(self.background, (0, 0))        
