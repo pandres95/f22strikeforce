@@ -97,7 +97,7 @@ class Ventana:
         return 0
 
 class VentNivel(Ventana):
-    def correr(self, n_enemigo, bala_enem, vida_enemigo, vid_rest_raptor, vel_enem, contador, nivel, puntaje):           
+    def correr(self, n_enemigo, bala_enem, vida_enemigo, vid_rest_raptor, vel_enem, contador, nivel, puntaje, punt_obt):           
         self.sonDisparo = pygame.mixer.Sound("../res/sounds/disparo.wav") 
         self.sonDisparo.set_volume(0.2)
         self.sonLaser = pygame.mixer.Sound("../res/sounds/laser.wav") 
@@ -116,7 +116,7 @@ class VentNivel(Ventana):
         self.balasEnem = []
         self.clock = pygame.time.Clock()
         self.vidas = 3
-        self.puntaje = 0
+        self.puntaje = punt_obt
         self.contador1 = 0
         self.contador2 = 0
         self.nBonusVida = False
@@ -373,8 +373,8 @@ class VentContinuar(Ventana):
                         pygame.quit()
                         sys.exit()
                     if resp == True:
-                        if self.cursor.colliderect(self.boton_siguiente):                            
-                            main(nivel+2)
+                        if self.cursor.colliderect(self.boton_siguiente):                                               
+                            main((nivel+2), int(punt))
                     
             self.screen.blit(self.background, (0, 0))        
             self.screen.blit(self.boton_salir.imagen, self.boton_salir.rect)    
