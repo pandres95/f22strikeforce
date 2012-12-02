@@ -11,19 +11,19 @@ except:
 
 class Common:
     def __init__(self):
-        self.pygame=0
-        self.screen=0
+        self.pygame = 0
+        self.screen = 0
 
     def ejecutar(self):
         pygame.init()
         clock = pygame.time.Clock()
         screen = pygame.display.set_mode((800,490))
-        pygame.mouse.set_visible(True)        
+        pygame.mouse.set_visible(True)
         pygame.mixer.set_num_channels(32)
         pygame.display.set_caption("F22 Strike Force")
         screenwidth=screen.get_width()
         screenheight=screen.get_height()
-        explosions=0
+        explosions = 0
         return pygame,screen
 
 class ProgressBar():
@@ -97,29 +97,49 @@ class Ventana:
         return 0
 
 class VentNivel(Ventana):
+    
     def correr(self, n_enemigo, bala_enem, vida_enemigo, vid_rest_raptor, vel_enem, contador, nivel, tiempo, punt_obt):           
+
         self.sonDisparo = pygame.mixer.Sound("../res/sounds/disparo.wav") 
         self.sonDisparo.set_volume(0.2)
+
         self.sonLaser = pygame.mixer.Sound("../res/sounds/laser.wav") 
         self.sonLaser.set_volume(0.2)
+
         self.sonExplos1 = pygame.mixer.Sound("../res/sounds/explosion1.wav") 
         self.sonExplos1.set_volume(0.1)           
+
         self.raptor = Raptor(self.imagen)        
+
         self.numEnemigos = 1
+
         self.enemigos = []
+
         enemigo = Enemigo(self.imagen, n_enemigo) 
+
         enemigo.vida = vida_enemigo
+
         enemigo.speed = vel_enem     
+
         self.enemigos.append(enemigo)        
+
         self.texto = Texto(25)
+
         self.balas = []
+
         self.balasEnem = []
+
         self.clock = pygame.time.Clock()
+
         self.vidas = 3        
+
         self.puntaje = punt_obt
+
         self.contador1 = 0
         self.contador2 = 0
+
         self.nBonusVida = False
+
         self.segundos = 0
                 
         while True:         
@@ -283,8 +303,8 @@ class VentNivel(Ventana):
             elif self.vidas == int(self.vidas):
                 impresion = int(self.vidas)
             self.texto.render(self.screen, "Vidas: "+str(impresion), self.white, (0, 26))            
-            
-            self.segundos = pygame.time.get_ticks()/1000                     
+
+            self.segundos = pygame.time.get_ticks()/1000   
             
             pygame.display.update()
         return 0
