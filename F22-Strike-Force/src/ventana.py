@@ -98,7 +98,7 @@ class Ventana:
 
 class VentNivel(Ventana):
     
-    def correr(self, n_enemigo, bala_enem, vida_enemigo, vid_rest_raptor, vel_enem, contador, nivel, tiempo, punt_obt):           
+    def correr(self, n_enemigo, bala_enem, vida_enemigo, vid_rest_raptor, vel_enem, contador, nivel, tiempo, punt_obt, punt_min):           
 
         self.sonDisparo = pygame.mixer.Sound("../res/sounds/disparo.wav") 
         self.sonDisparo.set_volume(0.2)
@@ -151,8 +151,11 @@ class VentNivel(Ventana):
             
             #Muestra ventana de nivel superado                          
             
-            if self.segundos >= tiempo:                
-                continuar(True, self.puntaje, self.vidas, nivel)
+            if self.segundos >= tiempo: 
+                if self.puntaje >= punt_min:  
+                    continuar(True, self.puntaje, self.vidas, nivel)
+                else:
+                    continuar(False, self.puntaje, self.vidas, nivel)
             
             self.contador1 += 1
             self.contador2 += 1
