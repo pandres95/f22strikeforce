@@ -300,13 +300,17 @@ class VentPuntajes(Ventana):
         linea = ""
         for i in range(3):
             linea = self.fichero.mostrarPunt(i)
-            self.puntFichero.append(str(linea))              
+            self.puntFichero.append(linea)              
             
-        for i in range(3):         
-            if self.puntFichero[i] != "": 
+        self.impresion = []
+            
+        for i in range(3):              
+            if self.puntFichero[i] != 0:                 
                 self.num.append(str(i+1)+".")
+                self.impresion.append(str(self.puntFichero[i]))
             else:
                 self.num.append("")
+                self.impresion.append("")
                 
         while True:
             self.cursor.actualizar()
@@ -327,9 +331,9 @@ class VentPuntajes(Ventana):
             self.screen.blit(self.boton_salir.imagen, self.boton_salir.rect)
             self.texto.render(self.screen,"Puntajes", self.white ,(200, 30))                       
            
-            self.texto2.render(self.screen,"Mas altos:   "+self.num[0]+"   "+self.puntFichero[0], self.white ,(20, 200))   
-            self.texto2.render(self.screen,"              "+self.num[1]+"   "+self.puntFichero[1], self.white ,(20, 250))
-            self.texto2.render(self.screen,"              "+self.num[2]+"   "+self.puntFichero[2], self.white ,(20, 300))  
+            self.texto2.render(self.screen,"Mas altos:   "+self.num[0]+"   "+self.impresion[0], self.white ,(40, 200))   
+            self.texto2.render(self.screen,"              "+self.num[1]+"   "+self.impresion[1], self.white ,(40, 250))
+            self.texto2.render(self.screen,"              "+self.num[2]+"   "+self.impresion[2], self.white ,(40, 300))  
                        
             pygame.display.update()
         return 0
@@ -458,13 +462,11 @@ class Fichero():
         if compr == False:
             self.punt.append(puntaje)
             self.punt.sort()
-            self.punt.reverse()        
-            print(self.punt)
+            self.punt.reverse()           
             tmp = []
             for i in range(3):
                 tmp.append(self.punt[i])
-            self.punt = tmp
-            print(self.punt)
+            self.punt = tmp            
             self.guardar()
         
     def mostrarPunt(self, i):
