@@ -468,6 +468,7 @@ class Fichero():
         self.abrir("w+")        
         self.punt.append(puntaje)
         self.punt.sort()
+        self.punt.reverse()
         for i in range(3, len(self.punt)):
             del(self.punt[i])
         puntajes = [str(self.punt[0])+"\n",str(self.punt[1])+"\n",str(self.punt[2])+"\n"] 
