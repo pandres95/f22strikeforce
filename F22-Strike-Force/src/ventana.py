@@ -377,7 +377,7 @@ class VentContinuar(Ventana):
                         sys.exit()
                     if resp == True:
                         if self.cursor.colliderect(self.boton_siguiente):                                               
-                            main(nivel+2)
+                            main(int(nivel+2), int(punt))
                     
             self.screen.blit(self.background, (0, 0))        
             self.screen.blit(self.boton_salir.imagen, self.boton_salir.rect)    
