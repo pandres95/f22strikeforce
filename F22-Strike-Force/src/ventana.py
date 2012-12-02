@@ -4,7 +4,10 @@
 from pygame import *
 from elementos import *
 from principal import *
-#import cPickle
+try:
+    import cPickle as pickle
+except:
+    import pickle
 
 class Common:
     def __init__(self):
@@ -433,50 +436,30 @@ class Texto(pygame.font.Font):
             y += self.size
 
 class Fichero():
-    def __init__(self): 
-        self.__nombre = "puntajes.txt"          
-        self.punt = []                  
-        
-    def abrir(self, tipo):
+    def __init__(self):
         try:
-            self.__archivo = open(self.__nombre, tipo) 
+            self.punt = pickle.load(open("puntajes.txt", "rb"))
         except:
-            print("Error")     
-            
-    def cerrar(self):
-        try:
-            self.__archivo.close()
-        except:
-            print("Error")   
+            self.punt = [0,0,0]
         
-    def cargarPunt(self):
-        self.abrir("r")             
-        linea = "" 
-        for i in range(3):
-            linea = self.__archivo.readline()
-            if linea == "" or linea == "\n":
-                linea = 0 
-                
-            self.punt.append(int(linea))
-                       
-        self.cerrar()                          
+    def guardar(self):
+        try:
+            pickle.dump(self.punt, open("puntajes.txt", "wb"))
+        except:
+            print("Error: tu pinche archivito no está guardando")
+                             
         
     def agregarPunt(self, puntaje):        
-        self.cargarPunt()      
-        self.abrir("a") 
-        self.cerrar() 
-        self.abrir("w+")        
         self.punt.append(puntaje)
         self.punt.sort()
         self.punt.reverse()
-        for i in range(3, len(self.punt)):
-            del(self.punt[i])
-        puntajes = [str(self.punt[0])+"\n",str(self.punt[1])+"\n",str(self.punt[2])+"\n"] 
-        self.__archivo.writelines(puntajes) 
-        self.cerrar()                       
-
-    def mostrarPunt(self, i):
-        self.cargarPunt()   
-        return self.punt[i]       
-       
+        print(self.punt)
+        tmp = []
+        for i in range(3):
+            tmp.append(self.punt[i])
+        self.punt = tmp
+        print(self.punt)
+        self.guardar()
         
+    def mostrarPunt(self, i):
+        return self.punt[i]
