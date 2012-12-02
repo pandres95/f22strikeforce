@@ -450,16 +450,22 @@ class Fichero():
                              
         
     def agregarPunt(self, puntaje):        
-        self.punt.append(puntaje)
-        self.punt.sort()
-        self.punt.reverse()
-        print(self.punt)
-        tmp = []
-        for i in range(3):
-            tmp.append(self.punt[i])
-        self.punt = tmp
-        print(self.punt)
-        self.guardar()
+        compr = False
+        for i in range(len(self.punt)):
+            if self.punt[i] == puntaje:
+                compr = True
+                
+        if compr == False:
+            self.punt.append(puntaje)
+            self.punt.sort()
+            self.punt.reverse()        
+            print(self.punt)
+            tmp = []
+            for i in range(3):
+                tmp.append(self.punt[i])
+            self.punt = tmp
+            print(self.punt)
+            self.guardar()
         
     def mostrarPunt(self, i):
         return self.punt[i]
