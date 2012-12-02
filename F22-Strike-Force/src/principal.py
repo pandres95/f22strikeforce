@@ -10,15 +10,15 @@ def main(num, punt=0):
 
     elif num == 2:
         ventjuego = ventana.VentNivel(760, 710, 'fondo_nivel1.png','menu.mp3')
-        ventjuego.correr(1, 1, 50, 0.2, [0.2, -0.2], 100,1, 50, 0, 130)
+        ventjuego.correr(1, 1, 50, 0.2, [0.2, -0.2], 100,1, 100, 0, 130)
 
     elif num == 3:        
         ventjuego = ventana.VentNivel(760, 710, 'fondo_nivel2.jpg','menu.mp3')        
-        ventjuego.correr(2, 1, 70, 0.5, [0.3, -0.3], 80 ,2, 100, punt, 220)
+        ventjuego.correr(2, 1, 70, 0.5, [0.3, -0.3], 80 ,2, 210, punt, 220)
 
     elif num == 4:        
         ventjuego = ventana.VentNivel(760, 710, 'fondo_nivel1.png','menu.mp3')
-        ventjuego.correr(3, 2, 90, 1, [0.4, -0.4], 60, 3, 150, punt, 320)
+        ventjuego.correr(3, 2, 90, 1, [0.4, -0.4], 60, 3, 320, punt, 320)
 
     elif num == 5:
         ventjuego = ventana.VentPuntajes(600, 490, 'fondo_menu.png','menu.mp3')
