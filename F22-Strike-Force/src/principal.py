@@ -3,7 +3,7 @@
 
 import ventana
 
-def main(num, punt=0):
+def main(num):
     if num == 1:
         ventjuego = ventana.Ventana(800,490,'fondo_menu.png','menu.mp3')
         ventjuego.correr()
@@ -14,11 +14,11 @@ def main(num, punt=0):
 
     elif num == 3:
         ventjuego = ventana.VentNivel(760, 710, 'fondo_nivel2.jpg','menu.mp3')
-        ventjuego.correr(2, 1, 70, 0.5, [0.3, -0.3], 80 ,2, 50, punt)
+        ventjuego.correr(2, 1, 70, 0.5, [0.3, -0.3], 80 ,2, 100, 50)
 
     elif num == 4:
         ventjuego = ventana.VentNivel(760, 710, 'fondo_nivel1.png','menu.mp3')
-        ventjuego.correr(3, 2, 90, 1, [0.4, -0.4], 60, 3, 50, punt)
+        ventjuego.correr(3, 2, 90, 1, [0.4, -0.4], 60, 3, 200, 100)
 
     elif num == 5:
         ventjuego = ventana.VentPuntajes(600, 490, 'fondo_menu.png','menu.mp3')
