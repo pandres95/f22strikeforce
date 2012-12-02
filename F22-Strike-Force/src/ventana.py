@@ -97,7 +97,7 @@ class Ventana:
         return 0
 
 class VentNivel(Ventana):
-    def correr(self, n_enemigo, bala_enem, vida_enemigo, vid_rest_raptor, vel_enem, contador, nivel, puntaje, punt_obt):           
+    def correr(self, n_enemigo, bala_enem, vida_enemigo, vid_rest_raptor, vel_enem, contador, nivel, tiempo, punt_obt):           
         self.sonDisparo = pygame.mixer.Sound("../res/sounds/disparo.wav") 
         self.sonDisparo.set_volume(0.2)
         self.sonLaser = pygame.mixer.Sound("../res/sounds/laser.wav") 
@@ -120,6 +120,7 @@ class VentNivel(Ventana):
         self.contador1 = 0
         self.contador2 = 0
         self.nBonusVida = False
+        self.segundos = 0
                 
         while True:         
                        
@@ -128,10 +129,10 @@ class VentNivel(Ventana):
             if self.vidas <= 0:
                 continuar(False, self.puntaje, self.vidas, nivel) 
             
-            #Muestra ventana de nivel superado
-                
-            if self.puntaje >= puntaje:
-                continuar(True, self.puntaje, self.vidas, nivel) 
+            #Muestra ventana de nivel superado                          
+            
+            if self.segundos >= tiempo:
+                continuar(True, self.puntaje, self.vidas, nivel)
             
             self.contador1 += 1
             self.contador2 += 1
@@ -282,6 +283,8 @@ class VentNivel(Ventana):
             elif self.vidas == int(self.vidas):
                 impresion = int(self.vidas)
             self.texto.render(self.screen, "Vidas: "+str(impresion), self.white, (0, 26))
+            
+            self.segundos = pygame.time.get_ticks()/1000            
             
             pygame.display.update()
         return 0
