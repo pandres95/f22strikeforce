@@ -141,7 +141,7 @@ class VentNivel(Ventana):
         self.nBonusVida = False
 
         self.segundos = 0
-        #self.segundos = pygame.time.set_timer(self.contador ,0)
+        pygame.time.set_timer(USEREVENT + 1, tiempo * 1000)
                 
         while True:         
                        
@@ -150,13 +150,6 @@ class VentNivel(Ventana):
             if self.vidas <= 0:
                 continuar(False, self.puntaje, self.vidas, nivel) 
             
-            #Muestra ventana de nivel superado                          
-            
-            if self.segundos >= tiempo: 
-                if self.puntaje >= punt_min:  
-                    continuar(True, self.puntaje, self.vidas, nivel)
-                else:
-                    continuar(False, self.puntaje, self.vidas, nivel)
             
             self.contador1 += 1
             self.contador2 += 1
@@ -176,6 +169,8 @@ class VentNivel(Ventana):
                     pygame.mixer.music.stop()
                     pygame.quit()
                     sys.exit()
+                elif eventos.type == USEREVENT + 1:
+                    self.timeout(punt_min, nivel)
 
             #Mostrar la venta Continuar
             
@@ -308,10 +303,15 @@ class VentNivel(Ventana):
                 impresion = int(self.vidas)
             self.texto.render(self.screen, "Vidas: "+str(impresion), self.white, (0, 26))                  
 
-            self.segundos = pygame.time.get_ticks()/1000              
-            
             pygame.display.update()
         return 0
+
+    def timeout(self, punt_min, nivel):
+        if self.puntaje >= punt_min:  
+            continuar(True, self.puntaje, self.vidas, nivel)
+        else:
+            continuar(False, self.puntaje, self.vidas, nivel)
+            
 
 class VentPuntajes(Ventana):
     def correr(self):
