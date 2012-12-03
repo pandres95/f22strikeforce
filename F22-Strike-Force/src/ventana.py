@@ -308,9 +308,7 @@ class VentNivel(Ventana):
                 impresion = int(self.vidas)
             self.texto.render(self.screen, "Vidas: "+str(impresion), self.white, (0, 26))                  
 
-            self.segundos = pygame.time.get_ticks()/1000   
-            
-            
+            self.segundos = pygame.time.get_ticks()/1000              
             
             pygame.display.update()
         return 0
