@@ -143,7 +143,7 @@ class VentNivel(Ventana):
         self.segundos = 0
         pygame.time.set_timer(USEREVENT + 1, tiempo * 1000)
                 
-        while True:         
+        while True:        
                        
             #Muestra ventana de nivel perdido
             
@@ -205,13 +205,21 @@ class VentNivel(Ventana):
                         self.balasEnem.append(bala1)
                         bala2=BalaEnemigo(x2,y, self.imagen, bala_enem)
                         self.balasEnem.append(bala2)                               
-                    elif nivel == 4:
+                    elif nivel == 4:                      
                         x1 = x + 120
                         x2 = x - 120
                         bala1=BalaEnemigo(x1,y, self.imagen, bala_enem)
                         self.balasEnem.append(bala1)
                         bala2=BalaEnemigo(x2,y, self.imagen, bala_enem)
-                        self.balasEnem.append(bala2)                        
+                        self.balasEnem.append(bala2)  
+                        if self.enemigos[0].vida <= 250:
+                            x1 = x + 120
+                            x2 = x - 120
+                            y += 110
+                            bala1=BalaEnemigo(x1,y, self.imagen, bala_enem)
+                            self.balasEnem.append(bala1)
+                            bala2=BalaEnemigo(x2,y, self.imagen, bala_enem)
+                            self.balasEnem.append(bala2)                        
                     
                     self.sonLaser.play()       
                               
