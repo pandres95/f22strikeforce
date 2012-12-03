@@ -41,23 +41,30 @@ class Raptor(pygame.sprite.Sprite):
 class Enemigo(pygame.sprite.Sprite):
     def __init__(self, im, num):
         pygame.sprite.Sprite.__init__(self)
-        self.imagen = im.cargarImagen("enemigo"+str(num)+".png", True)
+        self.num = num        
+        self.imagen = im.cargarImagen("enemigo"+str(num)+".png", True)        
         self.rect = self.imagen.get_rect()
-        self.rect.centerx = random.randint(64, WIDTH-20)
-        self.rect.centery = random.randint(64, HEIGHT/ 2)
+        if self.num != 4:
+            self.rect.centerx = random.randint(64, WIDTH-20)
+            self.rect.centery = random.randint(64, HEIGHT/ 2)
+        else:
+            self.rect.centerx = 400
+            self.rect.centery = 150
         self.speed = [0.2, -0.2]
         self.vida = 50        
 
-    def actualizar(self, time):                  
+    def actualizar(self, time):                        
         self.rect.centerx += self.speed[0] * time
-        self.rect.centery += self.speed[1] * time       
+        if self.num != 4:
+            self.rect.centery += self.speed[1] * time       
             
         if self.rect.left <= 10 or self.rect.right >= WIDTH:
             self.speed[0] = -self.speed[0]
             self.rect.centerx += self.speed[0] * time
-        if self.rect.top <= 0 or self.rect.bottom >= HEIGHT/2:
-            self.speed[1] = -self.speed[1]
-            self.rect.centery += self.speed[1] * time
+        if self.num != 4:
+            if self.rect.top <= 0 or self.rect.bottom >= HEIGHT/2:
+                self.speed[1] = -self.speed[1]
+                self.rect.centery += self.speed[1] * time
 
     def detColision(self, time, objeto):
         if pygame.sprite.collide_rect(self, objeto):
