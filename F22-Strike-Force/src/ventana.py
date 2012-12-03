@@ -141,6 +141,7 @@ class VentNivel(Ventana):
         self.nBonusVida = False
 
         self.segundos = 0
+        #self.segundos = pygame.time.set_timer(self.contador ,0)
                 
         while True:         
                        
