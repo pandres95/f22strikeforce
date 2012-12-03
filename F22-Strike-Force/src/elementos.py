@@ -72,10 +72,9 @@ class Enemigo(pygame.sprite.Sprite):
             self.rect.centerx += self.speed[0] * time
 
     def comprPos(self):
-        x1 = self.rect.centerx + 15
-        x2 = self.rect.centerx - 15
+        x = self.rect.centerx         
         y = self.rect.centery - 20
-        return x1,x2,y
+        return x,y
         
 
 class Bala(pygame.sprite.Sprite):       

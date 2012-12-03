@@ -188,15 +188,32 @@ class VentNivel(Ventana):
                 self.sonDisparo.play()
 
             #Crear balas de enemigos
-
+            
             if self.contador1 == contador:
                 for i in range(len(self.enemigos)):
-                    x1,x2, y = self.enemigos[i].comprPos()                
+                    x, y = self.enemigos[i].comprPos()
+                    x1 = x + 15
+                    x2 = x - 15                  
                     bala1=BalaEnemigo(x1,y, self.imagen, bala_enem)
                     self.balasEnem.append(bala1)
                     bala2=BalaEnemigo(x2,y, self.imagen, bala_enem)
-                    self.balasEnem.append(bala2)  
-                    self.sonLaser.play()               
+                    self.balasEnem.append(bala2)      
+                    if nivel == 3:
+                        x1 = x + 30
+                        x2 = x - 30 
+                        bala1=BalaEnemigo(x1,y, self.imagen, bala_enem)
+                        self.balasEnem.append(bala1)
+                        bala2=BalaEnemigo(x2,y, self.imagen, bala_enem)
+                        self.balasEnem.append(bala2)                               
+                    elif nivel == 4:
+                        x1 = x + 120
+                        x2 = x - 120
+                        bala1=BalaEnemigo(x1,y, self.imagen, bala_enem)
+                        self.balasEnem.append(bala1)
+                        bala2=BalaEnemigo(x2,y, self.imagen, bala_enem)
+                        self.balasEnem.append(bala2)                        
+                    
+                    self.sonLaser.play()       
                               
 
             #Crear bonus de vida
@@ -206,14 +223,15 @@ class VentNivel(Ventana):
                 self.BonusVida = Bonus(self.imagen, "lifebonus.png")
                 
             #Crea más enemigos cuando ya no queda ninguno
-
-            if (len(self.enemigos)) == 0:
-                self.numEnemigos += 1                
-                for i in range(self.numEnemigos):
-                    enemigo = Enemigo(self.imagen, n_enemigo)   
-                    enemigo.vida = vida_enemigo     
-                    enemigo.speed = vel_enem
-                    self.enemigos.append(enemigo)               
+            
+            if nivel != 4:
+                if (len(self.enemigos)) == 0:
+                    self.numEnemigos += 1                
+                    for i in range(self.numEnemigos):
+                        enemigo = Enemigo(self.imagen, n_enemigo)   
+                        enemigo.vida = vida_enemigo     
+                        enemigo.speed = vel_enem
+                        self.enemigos.append(enemigo)               
                           
             
             #Crea el bonus de vida
