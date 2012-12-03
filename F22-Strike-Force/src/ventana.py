@@ -83,7 +83,7 @@ class Ventana:
                     if self.cursor.colliderect(self.boton_iniciar):                        
                         main(2)
                     if self.cursor.colliderect(self.boton_puntajes):
-                        main(5)
+                        main(6)
                     if self.cursor.colliderect(self.boton_salir):
                         pygame.mixer.music.stop()
                         pygame.quit()
@@ -400,8 +400,11 @@ class VentContinuar(Ventana):
                         pygame.quit()
                         sys.exit()
                     if resp == True:
-                        if self.cursor.colliderect(self.boton_siguiente):                                                                  
-                            main(int(nivel+2), int(punt))
+                        if self.cursor.colliderect(self.boton_siguiente): 
+                            if (nivel + 2) == 6:
+                                main(1)
+                            else:                                                    
+                                main((nivel+2), int(punt))
                     
             self.screen.blit(self.background, (0, 0))        
             self.screen.blit(self.boton_salir.imagen, self.boton_salir.rect)    

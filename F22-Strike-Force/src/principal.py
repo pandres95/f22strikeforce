@@ -19,8 +19,12 @@ def main(num, punt=0):
     elif num == 4:        
         ventjuego = ventana.VentNivel(760, 710, 'fondo_nivel3.jpg','menu.mp3')
         ventjuego.correr(3, 2, 90, 1, [0.4, -0.4], 60, 3, 120, punt, 850)
-
+        
     elif num == 5:
+        pass
+        #ventjuego = ventana.VentNivel(760, 710, 'fondo_nivel4.png','menu.mp3')
+
+    elif num == 6:
         ventjuego = ventana.VentPuntajes(600, 490, 'fondo_menu.png','menu.mp3')
         ventjuego.correr()
 
