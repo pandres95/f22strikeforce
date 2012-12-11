@@ -445,8 +445,11 @@ class VentContinuar(Ventana):
                 y = 115
             self.texto.render(self.screen,"Nivel "+text, self.white ,(y, 30))
             puntaje = str(int(punt))
-            if(int(self.fichero.mostrarPunt(0)) == punt):
-                puntaje += " PUNTAJE MAXIMO :D"
+            
+            if resp == False or (punt >= 1100 and nivel == 4):            
+                if(int(self.fichero.mostrarPunt(0)) == punt):
+                    puntaje += " PUNTAJE MAXIMO :D"
+                
             self.texto2.render(self.screen,"Puntaje:   " + puntaje, self.white ,(20, 130))
             impresion = 0
             if vidas > int(vidas):
