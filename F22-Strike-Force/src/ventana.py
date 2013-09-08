@@ -3,7 +3,8 @@
 
 from pygame import *
 from elementos import *
-from principal import *
+from launcher import *
+
 try:
     import cPickle as pickle
 except:
@@ -38,6 +39,7 @@ class ProgressBar():
         self.font = pygame.font.Font("../res/fonts/BITSUMIS.TTF",64)
         self.loading = self.font.render("Cargando", True, self.color)
         self.textHeight=self.y1-80
+        
     def update(self,percent):
         self.screen.fill((0,0,0))
         self.screen.blit(self.loading, (300,self.textHeight))
@@ -49,7 +51,7 @@ class ProgressBar():
 
 
 class Ventana:
-    def __init__(self, width, height, fondo, musica):              
+    def __init__(self, width, height, fondo, musica): 
         self.texto = Texto(40)
         self.white = (255,255,255)
         self.width = width
@@ -62,9 +64,12 @@ class Ventana:
         pygame.mixer.music.load(self.__musica)
         pygame.mixer.music.play()        
         self.imagen=Imagen()
-        self.background = self.imagen.cargarImagen(fondo)       
+        self.background = self.imagen.cargarImagen(fondo)
 
-    def correr(self):
+
+class VentPrincipal(Ventana):
+    
+    def correr(self, launcher):
         barra=ProgressBar()
         barra.update(100)
         self.cursor = Cursor()
@@ -80,14 +85,17 @@ class Ventana:
                     pygame.quit()
                     sys.exit()
                 elif eventos.type == MOUSEBUTTONDOWN:                    
-                    if self.cursor.colliderect(self.boton_iniciar):                        
-                        main(2)
+                    if self.cursor.colliderect(self.boton_iniciar): 
+                        launcher.iniciar(2)                       
+                        
                     if self.cursor.colliderect(self.boton_puntajes):
-                        main(6)
+                        launcher.iniciar(6)
+                        
                     if self.cursor.colliderect(self.boton_salir):
                         pygame.mixer.music.stop()
                         pygame.quit()
                         sys.exit()
+                        
             self.screen.blit(self.background, (0, 0))            
             self.screen.blit(self.boton_iniciar.imagen, self.boton_iniciar.rect)
             self.screen.blit(self.boton_puntajes.imagen, self.boton_puntajes.rect)
@@ -95,10 +103,11 @@ class Ventana:
             self.texto.render(self.screen,"F22 Strike Force", self.white ,(400, 0))
             pygame.display.update()
         return 0
+    
 
 class VentNivel(Ventana):
     
-    def correr(self, n_enemigo, bala_enem, vida_enemigo, vid_rest_raptor, vel_enem, contador, nivel, tiempo, punt_obt, punt_min):           
+    def inicializar(self, nEnemigo, balaEnem, vidaEnemigo, vidRestRaptor, velEnem, contador, nivel, tiempo, puntObt, puntMin):           
 
         self.sonDisparo = pygame.mixer.Sound("../res/sounds/disparo.wav") 
         self.sonDisparo.set_volume(0.2)
@@ -109,19 +118,27 @@ class VentNivel(Ventana):
         self.sonExplos1 = pygame.mixer.Sound("../res/sounds/explosion1.wav") 
         self.sonExplos1.set_volume(0.1)           
 
-        self.raptor = Raptor(self.imagen)        
+        self.raptor = Raptor(self.imagen)     
+        
+        self.nivel = nivel   
 
         self.numEnemigos = 1
 
         self.enemigos = []
+        
+        self.nEnemigo = nEnemigo
+        
+        self.velEnem = velEnem
+        
+        self.vidRestRaptor = vidRestRaptor
 
-        enemigo = Enemigo(self.imagen, n_enemigo) 
-
-        enemigo.vida = vida_enemigo
-
-        enemigo.speed = vel_enem     
-
-        self.enemigos.append(enemigo)        
+        self.balaEnem = balaEnem
+        
+        self.vidaEnemigo = vidaEnemigo
+        
+        self.enemigo = Enemigo(self.imagen, self.nEnemigo, self.velEnem, self.vidaEnemigo) 
+        
+        self.enemigos.append(self.enemigo)        
 
         self.texto = Texto(25)
 
@@ -133,28 +150,34 @@ class VentNivel(Ventana):
 
         self.vidas = 3        
 
-        self.puntaje = punt_obt
+        self.puntaje = puntObt
+        self.punt_min = puntMin
 
+        self.contador = contador
         self.contador1 = 0
         self.contador2 = 0
+        
+        self.nivel = nivel
 
-        self.nBonusVida = False
+        self.nBonusVida = False       
 
         self.segundos = 0
         pygame.time.set_timer(USEREVENT + 1, tiempo * 1000)
+        
+        
+    def correr(self, launcher):
                 
         while True:        
                        
             #Muestra ventana de nivel perdido
             
             if self.vidas <= 0:
-                continuar(False, self.puntaje, self.vidas, nivel) 
-            
+                launcher.continuar(False)
             
             self.contador1 += 1
             self.contador2 += 1
             
-            if self.contador1 == contador+1:
+            if self.contador1 == self.contador+1:
                 self.contador1 = 1
 
             if self.contador2 == 2101:
@@ -170,12 +193,12 @@ class VentNivel(Ventana):
                     pygame.quit()
                     sys.exit()
                 elif eventos.type == USEREVENT + 1:
-                    self.timeout(punt_min, nivel)
+                    self.timeout(self.punt_min, self.nivel, launcher)
 
-            #Mostrar la venta Continuar
+            #Mostrar la ventana Continuar
             
-            if keys[K_ESCAPE]:      
-                continuar(False, self.puntaje, self.vidas, nivel)  
+            if keys[K_ESCAPE]:                 
+                launcher.continuar(False)                  
                 
             #Crear balas de raptor       
             
@@ -189,36 +212,36 @@ class VentNivel(Ventana):
 
             #Crear balas de enemigos
             
-            if self.contador1 == contador:
+            if self.contador1 == self.contador:
                 for i in range(len(self.enemigos)):
                     x, y = self.enemigos[i].comprPos()
                     x1 = x + 15
                     x2 = x - 15                  
-                    bala1=BalaEnemigo(x1,y, self.imagen, bala_enem)
+                    bala1=BalaEnemigo(x1,y, self.imagen, self.balaEnem)
                     self.balasEnem.append(bala1)
-                    bala2=BalaEnemigo(x2,y, self.imagen, bala_enem)
+                    bala2=BalaEnemigo(x2,y, self.imagen, self.balaEnem)
                     self.balasEnem.append(bala2)      
-                    if nivel == 3:
+                    if self.nivel == 3:
                         x1 = x + 30
                         x2 = x - 30 
-                        bala1=BalaEnemigo(x1,y, self.imagen, bala_enem)
+                        bala1=BalaEnemigo(x1,y, self.imagen, self.balaEnem)
                         self.balasEnem.append(bala1)
-                        bala2=BalaEnemigo(x2,y, self.imagen, bala_enem)
+                        bala2=BalaEnemigo(x2,y, self.imagen, self.balaEnem)
                         self.balasEnem.append(bala2)                               
-                    elif nivel == 4:                      
+                    elif self.nivel == 4:                      
                         x1 = x + 120
                         x2 = x - 120
-                        bala1=BalaEnemigo(x1,y, self.imagen, bala_enem)
+                        bala1=BalaEnemigo(x1,y, self.imagen, self.balaEnem)
                         self.balasEnem.append(bala1)
-                        bala2=BalaEnemigo(x2,y, self.imagen, bala_enem)
+                        bala2=BalaEnemigo(x2,y, self.imagen, self.balaEnem)
                         self.balasEnem.append(bala2)  
-                        if self.enemigos[0].vida <= 250:
+                        if self.enemigos[0].vida <= 130:
                             x1 = x + 120
                             x2 = x - 120
                             y += 110
-                            bala1=BalaEnemigo(x1,y, self.imagen, bala_enem)
+                            bala1=BalaEnemigo(x1,y, self.imagen, self.balaEnem)
                             self.balasEnem.append(bala1)
-                            bala2=BalaEnemigo(x2,y, self.imagen, bala_enem)
+                            bala2=BalaEnemigo(x2,y, self.imagen, self.balaEnem)
                             self.balasEnem.append(bala2)                        
                     
                     self.sonLaser.play()       
@@ -232,13 +255,12 @@ class VentNivel(Ventana):
                 
             #Crea más enemigos cuando ya no queda ninguno
             
-            if nivel != 4:
+            if self.nivel != 4:
                 if (len(self.enemigos)) == 0:
                     self.numEnemigos += 1                
                     for i in range(self.numEnemigos):
-                        enemigo = Enemigo(self.imagen, n_enemigo)   
-                        enemigo.vida = vida_enemigo     
-                        enemigo.speed = vel_enem
+                        #enemigo = Enemigo(self.imagen, self.nEnemigo, self.velEnem, self.vidaEnemigo)     
+                        enemigo = self.enemigo.clone()                    
                         self.enemigos.append(enemigo)               
                           
             
@@ -283,7 +305,7 @@ class VentNivel(Ventana):
             for j in range(len(self.balasEnem)):
                 x, y = self.balasEnem[j].actualizar(self.raptor)
                 if y == True:                     
-                    self.vidas -= vid_rest_raptor
+                    self.vidas -= self.vidRestRaptor
                     self.sonExplos1.play()
                 if x == True or y == True:
                     del(self.balasEnem[j])
@@ -331,16 +353,17 @@ class VentNivel(Ventana):
 
             pygame.display.update()
         return 0
+    
 
-    def timeout(self, punt_min, nivel):
+    def timeout(self, punt_min, nivel, launcher):
         if self.puntaje >= punt_min:  
-            continuar(True, self.puntaje, self.vidas, nivel)
+            launcher.continuar(True)
         else:
-            continuar(False, self.puntaje, self.vidas, nivel)
+            launcher.continuar(False)
             
 
 class VentPuntajes(Ventana):
-    def correr(self):
+    def inicializar(self):
         self.texto = Texto(35)    
         self.texto2 = Texto(25)    
         self.cursor = Cursor()        
@@ -351,6 +374,7 @@ class VentPuntajes(Ventana):
         self.puntFichero = []
         self.num = []
         linea = ""
+        
         for i in range(3):
             linea = self.fichero.mostrarPunt(i)
             self.puntFichero.append(linea)              
@@ -365,6 +389,8 @@ class VentPuntajes(Ventana):
                 self.num.append("")
                 self.impresion.append("")
                 
+    def correr(self, launcher):
+                
         while True:
             self.cursor.actualizar()
             for eventos in pygame.event.get():                
@@ -372,13 +398,16 @@ class VentPuntajes(Ventana):
                     pygame.mixer.music.stop()
                     pygame.quit()
                     sys.exit()
+                    
                 elif eventos.type == MOUSEBUTTONDOWN:                    
                     if self.cursor.colliderect(self.boton_regresar):
-                        main(1)
+                        launcher.iniciar(1)
+                        
                     if self.cursor.colliderect(self.boton_salir):
                         pygame.mixer.music.stop()
                         pygame.quit()
                         sys.exit()
+                        
             self.screen.blit(self.background, (0, 0))            
             self.screen.blit(self.boton_regresar.imagen, self.boton_regresar.rect)
             self.screen.blit(self.boton_salir.imagen, self.boton_salir.rect)
@@ -391,11 +420,17 @@ class VentPuntajes(Ventana):
             pygame.display.update()
         return 0
     
+    
 class VentContinuar(Ventana):
-    def correr(self, resp, punt, vidas, nivel):
+    
+    def inicializar(self, resp, punt, vidas, nivel):
         self.texto = Texto(35)   
         self.texto2 = Texto(25)      
         self.cursor = Cursor()   
+        self.resp = resp
+        self.nivel = nivel
+        self.puntaje = punt
+        self.vidas = vidas
         if resp == True:
             x1 = 50
             x2 = 231
@@ -410,6 +445,9 @@ class VentContinuar(Ventana):
         self.fichero = Fichero()
         if punt != 0:
             self.fichero.agregarPunt(int(punt)) 
+            
+            
+    def correr(self, launcher):
                 
         while True:
             self.cursor.actualizar()
@@ -420,42 +458,45 @@ class VentContinuar(Ventana):
                     sys.exit()
                 elif eventos.type == MOUSEBUTTONDOWN:                    
                     if self.cursor.colliderect(self.boton_menu):
-                        main(1)
+                        launcher.iniciar(1)
+                        
                     if self.cursor.colliderect(self.boton_salir):
                         pygame.mixer.music.stop()
                         pygame.quit()
                         sys.exit()
-                    if resp == True:
+                        
+                    if self.resp == True:
                         if self.cursor.colliderect(self.boton_siguiente): 
-                            if (nivel + 2) == 6:
-                                main(1)
-                            else:                                                    
-                                main((nivel+2), int(punt))
+                            if (self.nivel + 2) == 6:
+                                launcher.iniciar(1)
+                                
+                            else:
+                                launcher.iniciar((self.nivel+2), int(self.puntaje))  
                     
             self.screen.blit(self.background, (0, 0))        
             self.screen.blit(self.boton_salir.imagen, self.boton_salir.rect)    
             self.screen.blit(self.boton_menu.imagen, self.boton_menu.rect)
-            if resp == True:
+            if self.resp == True:
                 self.screen.blit(self.boton_siguiente.imagen, self.boton_siguiente.rect)
-            if resp == True:
+            if self.resp == True:
                 text = "superado"
                 y = 140
             else:
                 text = "no superado"               
                 y = 115
             self.texto.render(self.screen,"Nivel "+text, self.white ,(y, 30))
-            puntaje = str(int(punt))
+            puntaje = str(int(self.puntaje))
             
-            if resp == False or (punt >= 1100 and nivel == 4):            
-                if(int(self.fichero.mostrarPunt(0)) == punt):
+            if self.resp == False or (self.puntaje >= 1100 and self.nivel == 4):            
+                if(int(self.fichero.mostrarPunt(0)) == self.puntaje):
                     puntaje += " PUNTAJE MAXIMO :D"
                 
             self.texto2.render(self.screen,"Puntaje:   " + puntaje, self.white ,(20, 130))
             impresion = 0
-            if vidas > int(vidas):
-                impresion = int(vidas) + 1
-            elif vidas == int(vidas):
-                impresion = int(vidas)
+            if self.vidas > int(self.vidas):
+                impresion = int(self.vidas) + 1
+            elif self.vidas == int(self.vidas):
+                impresion = int(self.vidas)
             self.texto2.render(self.screen,"Vidas:      "+str(impresion), self.white ,(20, 170))
             pygame.display.update()
         return 0
